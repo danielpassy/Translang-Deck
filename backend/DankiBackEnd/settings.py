@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', '(ac&ri0xuv9_!o#$$=$g#po&mkaqaky-glk+vi^^!ka9f8%+$7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOST')
@@ -135,7 +135,8 @@ AUTH_USER_MODEL = "backend.User"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-MEDIA_ROOT = '/vol/web/media'
-STATIC_ROOT = '/vol/web/static'
+MEDIA_ROOT = path.join(BASE_DIR, 'static/media/')
+STATIC_ROOT = path.join(BASE_DIR, 'static/')
+STATICFILE_DIRS = (path.join(BASE_DIR, 'static/'),)
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'

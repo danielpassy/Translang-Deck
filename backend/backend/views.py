@@ -191,7 +191,7 @@ def correct(request):
 # View to return the static front-end code
 def index(request):
     try:
-        with open(join(settings.REACT_APP_DIR, "build", "index.html")) as f:
+        with open(join(settings.STATIC_ROOT, "build", "index.html")) as f:
             return HttpResponse(f.read())
     except FileNotFoundError:
         return HttpResponse(
