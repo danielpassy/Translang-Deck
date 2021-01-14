@@ -14,7 +14,7 @@ from .models import Decks, Correction, Error
 from .util import get_create_uuidd, FileValidator
 
 def testEnv(request):
-    env2 = environ
+    env = environ['ADSK_CLM_WPAD_PROXY_CHECK']
     return HttpResponse(f'the env value is {env}')
 
 @api_view(["POST"])
