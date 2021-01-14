@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from DankiBackEnd import settings
 from os.path import join
+from os import environ
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,7 +13,9 @@ from .serializers import DeckSerializer, CorrectionSerializer, ErrorSerializer
 from .models import Decks, Correction, Error
 from .util import get_create_uuidd, FileValidator
 
-
+def testEnv(request):
+    env2 = environ
+    return HttpResponse(f'the env value is {env}')
 
 @api_view(["POST"])
 def request_deck(request, method):
