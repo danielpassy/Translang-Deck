@@ -13,6 +13,26 @@ from .serializers import DeckSerializer, CorrectionSerializer, ErrorSerializer
 from .models import Decks, Correction, Error
 from .util import get_create_uuidd, FileValidator
 
+# loggin
+import logging
+logger = logging.getLogger(__file__)
+
+
+def some_view(request):
+    """
+    Example view showing all the ways you can log messages.
+    """
+    logger.debug("This logs a debug message.")
+    logger.info("This logs an info message.")
+    logger.warn("This logs a warning message.")
+    logger.error("This logs an error message.")
+    try:
+        raise Exception("This is a handled exception")
+    except Exception:
+        logger.exception("This logs an exception.")
+
+    raise Exception("This is an unhandled exception")
+    return HttpResponse("this worked")
 
 def testEnv(request):
 
