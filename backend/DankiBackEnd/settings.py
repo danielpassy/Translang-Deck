@@ -86,7 +86,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "var/log/django.log",
+            "filename": "/var/log/django.log",
             "formatter": "app",
         },
     },
@@ -166,8 +166,8 @@ AUTH_USER_MODEL = "backend.User"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-MEDIA_ROOT = path.join(BASE_DIR, 'static/')
-STATIC_ROOT = path.join(BASE_DIR, '/asd')
+MEDIA_ROOT = path.join(BASE_DIR, 'media/')
+STATIC_ROOT = path.join(BASE_DIR, 'static/')
 STATICFILE_DIRS = (path.join(BASE_DIR, 'static/'),)
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'

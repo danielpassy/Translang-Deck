@@ -237,9 +237,6 @@ def index(request):
         with open(join(settings.STATIC_ROOT, "build", "index.html")) as f:
             return HttpResponse(f.read())
     except FileNotFoundError:
-        return HttpResponse(
-            """
-            Please build the front-end using cd frontend && npm install && npm run build 
-            """,
+        return HttpResponse(f"{(join(settings.STATIC_ROOT, 'build'))}",
             status=501,
         )
