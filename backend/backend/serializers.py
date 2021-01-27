@@ -45,9 +45,9 @@ class CorrectionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         errors = validated_data["errors"]
         correction = validated_data.pop('errors')
-        content_hotel = Correction.objects.create(**validated_data)
+        correction_entry = Correction.objects.create(**validated_data)
 
         for error in errors:
-            Error.objects.create(related_correction=content_hotel, **error)
+            Error.objects.create(related_correction=correction_entry, **error)
 
-        return content_hotel
+        return correction_entry

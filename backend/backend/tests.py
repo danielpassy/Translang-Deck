@@ -181,11 +181,11 @@ class Correction(APITestCase):
         self.response2 = self.client2.post(
             reverse("correct"), {"errors": errors}, format="json"
         )
-        self.assertEqual(self.response2.data, "You need to specify the ID of the Deck")
+        self.assertEqual(self.response2.data, "You need to specify the id of the Deck")
 
     def test_missing_id_one_suggestion(self):
         """
-        When attempting to correct without the ID
+        When attempting to correct without the id
         When there's only 1 correction available under this session
         """
         errors = self.response.data["errors"]
@@ -194,12 +194,12 @@ class Correction(APITestCase):
             reverse("correct"), {"errors": errors}, format="json"
         )
         self.assertEqual(
-            self.response2.data, "You need to specify the ID of the Deck, options: 1"
+            self.response2.data, "You need to specify the id of the Deck, options: 1"
         )
 
     def test_missing_id_two_suggestion(self):
         """
-        When attempting to correct without the ID
+        When attempting to correct without the id
         When there's only 2 correctionS available under this session
         """
 
@@ -213,7 +213,7 @@ class Correction(APITestCase):
         errors[0]["correction"] = "שתיתי"
         self.response3 = self.client.post(reverse("correct"), {}, format="json")
         self.assertEqual(
-            self.response3.data, "You need to specify the ID of the Deck, options: 1, 2"
+            self.response3.data, "You need to specify the id of the Deck, options: 1, 2"
         )
 
     def test_not_the_owner(self):
@@ -225,7 +225,7 @@ class Correction(APITestCase):
         errors = self.response.data["errors"]
         errors[0]["correction"] = "שתיתי"
         self.response2 = self.client2.post(
-            reverse("correct"), {"ID": 1, "errors": errors}, format="json"
+            reverse("correct"), {"id": 1, "errors": errors}, format="json"
         )
         self.assertEqual(
             self.response2.data, "You have no permission to correct this Deck"
@@ -238,7 +238,7 @@ class Correction(APITestCase):
         errors = self.response.data["errors"]
         errors[0]["correction"] = "שתיתי"
         self.response2 = self.client.post(
-            reverse("correct"), {"ID": 3, "errors": errors}, format="json"
+            reverse("correct"), {"id": 3, "errors": errors}, format="json"
         )
         self.assertEqual(
             self.response2.data,
@@ -252,7 +252,7 @@ class Correction(APITestCase):
         errors = self.response.data["errors"]
         errors[0]["correction"] = []
         self.response2 = self.client.post(
-            reverse("correct"), {"ID": 1, "errors": errors}, format="json"
+            reverse("correct"), {"id": 1, "errors": errors}, format="json"
         )
         self.assertEqual(
             self.response2.data,
@@ -267,7 +267,7 @@ class Correction(APITestCase):
         errors = self.response.data["errors"]
         errors[0]["correction"] = "asdasd"
         self.response2 = self.client.post(
-            reverse("correct"), {"ID": 1, "errors": errors}, format="json"
+            reverse("correct"), {"id": 1, "errors": errors}, format="json"
         )
         self.assertEqual(
             self.response2.data["errors"][0]["message"],
@@ -280,7 +280,7 @@ class Correction(APITestCase):
         """
         nothing = {}
         self.response2 = self.client.post(
-            reverse("correct"), {"ID": self.response.data["id"]}, format="json"
+            reverse("correct"), {"id": self.response.data["id"]}, format="json"
         )
         self.assertEqual(
             self.response2.data,
@@ -294,7 +294,7 @@ class Correction(APITestCase):
         errors[0]["correction"] = "שתיתי"
         self.response2 = self.client.post(
             reverse("correct"),
-            {"errors": errors, "ID": self.response.data["id"]},
+            {"errors": errors, "id": self.response.data["id"]},
             format="json",
         )
         self.assertEqual(self.response2.status_code, 201)

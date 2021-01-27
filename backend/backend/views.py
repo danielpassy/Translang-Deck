@@ -8,14 +8,16 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
-from AnkiCardOTron.AnkiCardOTron import AnkiCardOTron
+from AnkiCardOTron import AnkiCardOTron
 from .serializers import DeckSerializer, CorrectionSerializer, ErrorSerializer
 from .models import Decks, Correction, Error
 from .util import get_create_uuidd, FileValidator
 
+
 def testEnv(request):
-    env = environ['ADSK_CLM_WPAD_PROXY_CHECK']
-    return HttpResponse(f'the env value is {env}')
+    env = environ["ADSK_CLM_WPAD_PROXY_CHECK"]
+    return HttpResponse(f"the env value is {env}")
+
 
 @api_view(["POST"])
 def request_deck(request, method):
@@ -79,7 +81,6 @@ def request_deck(request, method):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 @api_view(["POST"])
 def correct(request):
     """
@@ -101,19 +102,20 @@ def correct(request):
     # ---------------------- Start of Checks ---------------------------------- #
 
     # check for the Correction object in the db
-    if not "ID" in data.keys():
+    if not "id" in data.keys():
         try:
             corrections = Correction.objects.filter(userID=userID)
-            if len(corrections) == 0: raise ObjectDoesNotExist
+            if len(corrections) == 0:
+                raise ObjectDoesNotExist
             options = str([correction.pk for correction in corrections])
             options = options[1:-1]
             return Response(
-                f"You need to specify the ID of the Deck, options: {options}",
+                f"You need to specify the id of the Deck, options: {options}",
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except ObjectDoesNotExist:
             return Response(
-                "You need to specify the ID of the Deck",
+                "You need to specify the id of the Deck",
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -127,7 +129,7 @@ def correct(request):
         )
     # Check if the user is owner of the Correction object
     try:
-        correction = Correction.objects.get(pk=data["ID"])
+        correction = Correction.objects.get(pk=data["id"])
         if correction.userID != userID:
             return Response(
                 "You have no permission to correct this Deck",
@@ -135,52 +137,70 @@ def correct(request):
             )
     except ObjectDoesNotExist:
         return Response(
-            f"The Deck with {data['ID']} doesn't exist, we only keep decks for 1 hour"
+            f"The Deck with {data['id']} doesn't exist, we only keep decks for 1 hour"
         )
 
     # check for the presence of correction in every error entry
     for entry in data["errors"]:
-        if not entry["correction"]:
-            return Response(
-                f"You must inser a correction for the word {entry['word']} \
-                or delete this error entry if you want to ignore it",
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        try:
+            if not entry["correction"]:
+                return Response(
+                    f"You must inser a correction for the word {entry['word']} \
+                    or delete this error entry if you want to ignore it",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            corrections = True
+        except KeyError:
+            # in case there're no corrections to be issued.
+            corrections = False
+
     # --------------------- End of Checks ---------------------------------- #
 
-    # delete the errors.
-    word_list = [entry["correction"] for entry in data["errors"]]
-    ankitron_instance = AnkiCardOTron.AnkiCardOTron(word_list=word_list, django=1)
-    ankitron_instance.translate()
-    Error.objects.filter(pk=correction.pk).delete()
+    #if the user input corrections
+    if not corrections:
+        ankitron_instance = AnkiCardOTron.AnkiCardOTron(empty=True)
+        Error.objects.filter(pk=correction.pk).delete()
 
-    # in the case some correction is needed
-    if ankitron_instance.number_errors() > 0:
 
-        # get the fields field
-        fields = ankitron_instance.serialize()
+    if corrections:
+        word_list = [entry["correction"] for entry in data["errors"]]
 
-        # modify for the new entries.
-        correction.fields = fields
-        correction.save()
+        # proccess news words
+        ankitron_instance = AnkiCardOTron.AnkiCardOTron(word_list=word_list, django=1)
+        ankitron_instance.translate()
 
-        errors = ankitron_instance.errors()
-        error_instance_list = []
-        # deleted the old errors first.
-        for error in errors:
-            error_instance_list.append(
-                Error.objects.create(
-                    word=error["word"],
-                    type=error["type"],
-                    related_correction=correction,
+        # delete old errors
+        Error.objects.filter(related_correction=correction.pk).delete()
+
+        # in the case some correction is needed
+        if ankitron_instance.number_errors() > 0:
+
+            # get the new words
+            fields = ankitron_instance.serialize()
+
+            # modify for the new entries.
+            correction.fields = fields
+            correction.save()
+
+            errors = ankitron_instance.errors()
+            error_instance_list = []
+            # deleted the old errors first.
+            for error in errors:
+                error_instance_list.append(
+                    Error.objects.create(
+                        word=error["word"],
+                        type=error["type"],
+                        related_correction=correction,
+                    )
                 )
-            )
-        # retrieve the instance on the DB to account for the errors
-        correction_updated = Correction.objects.get(pk=correction.pk)
-        serializer = CorrectionSerializer(correction_updated)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            # retrieve the instance on the DB to account for the errors
+            correction_updated = Correction.objects.get(pk=correction.pk)
+            serializer = CorrectionSerializer(correction_updated)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     # in the obscure event that everything works just fine.
+    previous_word = correction.fields
+    ankitron_instance.deserialize(previous_word)
     ankitron_instance.save_notes()
     deck_path = ankitron_instance.generate_deck()
 
