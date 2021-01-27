@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '(ac&ri0xuv9_!o#$$=$g#po&mkasdasdqwejq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['translang.live', 'www.translang.live']
 # ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOST')
 
 

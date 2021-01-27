@@ -15,9 +15,9 @@ from .util import get_create_uuidd, FileValidator
 
 
 def testEnv(request):
-    env = environ["ADSK_CLM_WPAD_PROXY_CHECK"]
-    return HttpResponse(f"the env value is {env}")
 
+    a = environ['FOO']
+    return HttpResponse(f'the env value is {a}')
 
 @api_view(["POST"])
 def request_deck(request, method):
