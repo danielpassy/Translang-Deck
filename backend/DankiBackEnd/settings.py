@@ -86,7 +86,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "C:/Users/Daniel/Documents/Apps/Anki_Card_Builder/Translang-Deck/backend/logs/django.log",
+            "filename": "var/log/django.log",
             "formatter": "app",
         },
     },
