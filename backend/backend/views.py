@@ -224,6 +224,9 @@ def correct(request):
     ankitron_instance.save_notes()
     deck_path = ankitron_instance.generate_deck()
 
+    # get only the deck name
+    deck_name = os.path.basename(deck_path)
+
     # save to the db, delete the related fields
     db_object = Decks.objects.create(userID=userID, deck=deck_path)
     correction.delete()
