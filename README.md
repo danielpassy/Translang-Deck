@@ -9,23 +9,33 @@ Clone it
 ```bash
 git clone
 ```
-$ pip install -r requirements.txt
-
-# Faça as migrações
-$ python manage.py migrate
-
-# Inicialize em servidor local para testes
-$ python manage.py runserver
-
-# Gere um token de autenticação para realizar testes, 
-curl -d "username=teste&password=teste" -X POST http://127.0.0.1:8000/api-token-auth
-
-
-Create an 
+Create an virtual enviroment
 ```bash
-pip install foobar
+python3 -m venv venv
 ```
-
+Initialize the virtual environ
+```bash
+$ on Linux
+source ./venv/bin/activate
+$ On Windows
+/venv/Scripts/activate.exe
+```
+Install the required dependencies
+```bash
+pip install -r requirements.txt
+```
+Cd into backend
+```bash
+cd backend
+```
+Apply the migrations
+```bash
+python manage.py migrate
+```
+Start the developer server
+```python
+python manage.py runserver
+```
 
 
 ## Usage
