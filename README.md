@@ -50,8 +50,9 @@ First you need to input the Hebrew words that you wish to turn into Flash cards.
 - The first option, 'api/upload_file/', accepts a .csv with one word per cell.<br>
 - The second, 'api/upload_list/', accepts a list of words. <br>
 
-After doing the first step, you going to be answered either with the deck ready to use, or, in case there's any mistake, a list of errors that you should redirect to 
-'api/correct/' with the appropiate corrections. The mandatory fields are the Deck Id, the error list with the corrections.<br>
+After the first step, the response will contain either a deck ready to use, or, in case there's any mistake, a list of errors. <br>
+In the latter, you should redirect the response to 'api/correct/' inserting the appropiate corrections in the corretion field. <br>
+The mandatory fields are the Deck Id, the error list with the corrections as the response from the first step exemplifies.<br>
 To discard a word, just left the correction entry blank. If everything turns out fine, you're get the deck link as response, otherwise you may need to do extra corrections <br>
 
 
