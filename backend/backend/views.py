@@ -2,13 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from DankiBackEnd import settings
-from os.path import join
+from os.path import join, basename
 from os import environ
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
 from AnkiCardOTron import AnkiCardOTron
+from django.conf import settings
+
 from .serializers import DeckSerializer, CorrectionSerializer, ErrorSerializer
 from .models import Decks, Correction, Error
 from .util import get_create_uuidd, FileValidator
@@ -95,8 +97,12 @@ def request_deck(request, method):
 
     # FIND A WAY TO TRANSLATE OONLY WHAT IS NEEDED!
     ankitron_instance.save_notes()
-    deck_path = ankitron_instance.generate_deck()
-    db_object = Decks.objects.create(userID=userID, deck=deck_path)
+    # TODO: CHANGE GENERATE TOGETHER WITH PATH, UPLOAD CHANGE TO PACKAGE ASWEL.
+    
+    deck_path = ankitron_instance.generate_deck(join(settings.MEDIA_ROOT, 'outputdeck'))
+    # get only the deck name
+    deck_name = basename(deck_path)
+    db_object = Decks.objects.create(userID=userID, deck=deck_name)
     serializer = DeckSerializer(db_object)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -222,13 +228,13 @@ def correct(request):
     previous_word = correction.fields
     ankitron_instance.deserialize(previous_word)
     ankitron_instance.save_notes()
-    deck_path = ankitron_instance.generate_deck()
+    deck_path = ankitron_instance.generate_deck(join(settings.MEDIA_ROOT, 'outputdeck'))
 
     # get only the deck name
-    deck_name = os.path.basename(deck_path)
+    deck_name = basename(deck_path)
 
     # save to the db, delete the related fields
-    db_object = Decks.objects.create(userID=userID, deck=deck_path)
+    db_object = Decks.objects.create(userID=userID, deck=deck_name)
     correction.delete()
     serializer = DeckSerializer(db_object)
     return Response(serializer.data, status=status.HTTP_201_CREATED)

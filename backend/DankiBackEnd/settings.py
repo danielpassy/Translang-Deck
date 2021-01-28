@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', '(ac&ri0xuv9_!o#$$=$g#po&mkasdasdqwejqpoweaqaky-glk+vi^^!ka9f8%+$7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['translang.live', 'www.translang.live', 'localhost']
 # ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOST')
@@ -86,7 +86,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "/var/log/django.log",
+            "filename": "C:/Users/Daniel/Documents/Apps/Anki_Card_Builder/Translang-Deck/backend/logs/django.log",
             "formatter": "app",
         },
     },
@@ -166,8 +166,8 @@ AUTH_USER_MODEL = "backend.User"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-MEDIA_ROOT = path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = path.join(BASE_DIR, 'decks/')
 STATIC_ROOT = path.join(BASE_DIR, 'static/')
 STATICFILE_DIRS = (path.join(BASE_DIR, 'static/'),)
-MEDIA_URL = '/media/'
+MEDIA_URL = '/decks/'
 STATIC_URL = '/static/'
