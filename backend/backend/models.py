@@ -63,3 +63,5 @@ class Error(models.Model):
     related_correction = models.ForeignKey(
         "Correction", on_delete=models.CASCADE, related_name="errors"
     )
+    timeStamp = models.DateTimeField(auto_now_add=True)
+
