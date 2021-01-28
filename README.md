@@ -57,9 +57,9 @@ To discard a word, just left the correction entry blank. If everything turns out
 
 
 
-## Contribuindo
-Contribuições são bem vindas.
-Apenas certifique de escrever os testes apropiados.
+## Contributions
+Contributions are welcome.
+Just make sure to write the appropriate tests.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
