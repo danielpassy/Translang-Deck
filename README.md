@@ -1,5 +1,5 @@
 # Translang-Deck
-Backend for the Translang Deck project.
+Backend for the Translang Deck project.<br>
 https://www.translang.live/
 Written in Django, it allows user to utilize [AnkiTron](https://github.com/danielpassy/Anki-CardOTron) to automate the creation of Anki Deck to study Hebrew.
 
