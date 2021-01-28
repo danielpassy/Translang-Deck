@@ -1,6 +1,6 @@
 # Translang-Deck
 Backend for the Translang Deck project.<br>
-https://www.translang.live/
+https://www.translang.live/ <br>
 Written in Django, it allows user to utilize [AnkiTron](https://github.com/danielpassy/Anki-CardOTron) to automate the creation of Anki Deck to study Hebrew.
 
 ## Installation
@@ -40,18 +40,25 @@ python manage.py runserver
 
 ## Usage
 
+There're just three end points
 ```python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+    api/upload_file/
+    api/upload_list/
+    api/correct/
 ```
+First you need to input the Hebrew words that you wish to turn into Flash cards. You may choose one of the two options: <br> 
+- The first option, 'api/upload_file/', accepts a .csv with one word per cell.<br>
+- The second, 'api/upload_list/', accepts a list of words. <br>
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+After doing the first step, you going to be answered either with the deck ready to use, or, in case there's any mistake, a list of errors that you should redirect to 
+'api/correct/' with the appropiate corrections. The mandatory fields are the Deck Id, the error list with the corrections.<br>
+To discard a word, just left the correction entry blank. If everything turns out fine, you're get the deck link as response, otherwise you may need to do extra corrections <br>
 
-Please make sure to update tests as appropriate.
+
+
+## Contribuindo
+Contribuições são bem vindas.
+Apenas certifique de escrever os testes apropiados.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
