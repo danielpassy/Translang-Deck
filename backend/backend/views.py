@@ -99,7 +99,7 @@ def request_deck(request, method):
     ankitron_instance.save_notes()
     # TODO: CHANGE GENERATE TOGETHER WITH PATH, UPLOAD CHANGE TO PACKAGE ASWEL.
     
-    deck_path = ankitron_instance.generate_deck(join(settings.MEDIA_ROOT, 'outputdeck'))
+    deck_path = ankitron_instance.generate_deck(settings.MEDIA_ROOT)
     # get only the deck name
     deck_name = basename(deck_path)
     db_object = Decks.objects.create(userID=userID, deck=deck_name)
@@ -228,7 +228,7 @@ def correct(request):
     previous_word = correction.fields
     ankitron_instance.deserialize(previous_word)
     ankitron_instance.save_notes()
-    deck_path = ankitron_instance.generate_deck(join(settings.MEDIA_ROOT, 'outputdeck'))
+    deck_path = ankitron_instance.generate_deck(settings.MEDIA_ROOT)
 
     # get only the deck name
     deck_name = basename(deck_path)
