@@ -1,23 +1,36 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from DankiBackEnd import settings
+from django.conf import settings
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
+import json
 from os.path import join, basename
 from os import environ
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
-import json
-from AnkiCardOTron import AnkiCardOTron
-from django.conf import settings
+from rest_framework.views import APIView
 
+
+from rest_framework import status
+from AnkiCardOTron import AnkiCardOTron
+from DankiBackEnd import settings
 from .serializers import DeckSerializer, CorrectionSerializer, ErrorSerializer
 from .models import Decks, Correction, Error
 from .util import get_create_uuidd, FileValidator
 
 # loggin
 import logging
+
 logger = logging.getLogger(__file__)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class GetCSRFToken(APIView):
+
+    def get(self, request, format=None):
+        return Response({"success": "CSRF cookie set"})
 
 
 def some_view(request):
@@ -25,23 +38,17 @@ def some_view(request):
     Example view showing all the ways you can log messages.
     """
     logger.debug("This logs a debug message.")
-    logger.info("This logs an info message.")
-    logger.warn("This logs a warning message.")
-    logger.error("This logs an error message.")
-    try:
-        raise Exception("This is a handled exception")
-    except Exception:
-        logger.exception("This logs an exception.")
-
-    raise Exception("This is an unhandled exception")
     return HttpResponse("this worked")
 
-def testEnv(request):
 
-    a = environ['FOO']
-    return HttpResponse(f'the env value is {a}')
+def testEnv(request):
+    """ for Debug purpose """
+    a = environ["FOO"]
+    return HttpResponse(f"the env value is {a}")
+
 
 @api_view(["POST"])
+@csrf_protect
 def request_deck(request, method):
     # check for UID, if not present, create one.
     userID = get_create_uuidd(request)
@@ -98,7 +105,7 @@ def request_deck(request, method):
     # FIND A WAY TO TRANSLATE OONLY WHAT IS NEEDED!
     ankitron_instance.save_notes()
     # TODO: CHANGE GENERATE TOGETHER WITH PATH, UPLOAD CHANGE TO PACKAGE ASWEL.
-    
+
     deck_path = ankitron_instance.generate_deck(settings.MEDIA_ROOT)
     # get only the deck name
     deck_name = basename(deck_path)
@@ -108,6 +115,7 @@ def request_deck(request, method):
 
 
 @api_view(["POST"])
+@csrf_protect
 def correct(request):
     """
     Receive the correction data from the user
@@ -182,11 +190,10 @@ def correct(request):
 
     # --------------------- End of Checks ---------------------------------- #
 
-    #if the user input corrections
+    # if the user input corrections
     if not corrections:
         ankitron_instance = AnkiCardOTron.AnkiCardOTron(empty=True)
         Error.objects.filter(pk=correction.pk).delete()
-
 
     if corrections:
         word_list = [entry["correction"] for entry in data["errors"]]
@@ -246,6 +253,7 @@ def index(request):
         with open(join(settings.STATIC_ROOT, "build", "index.html")) as f:
             return HttpResponse(f.read())
     except FileNotFoundError:
-        return HttpResponse(f"{(join(settings.STATIC_ROOT, 'build'))}",
+        return HttpResponse(
+            f"{(join(settings.STATIC_ROOT, 'build'))}",
             status=501,
         )
