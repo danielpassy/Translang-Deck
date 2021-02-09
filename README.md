@@ -1,7 +1,7 @@
 # Translang-Deck
 Backend for the Translang Deck project.<br>
 https://www.translang.live/ <br>
-Written in Django, it allows user to utilize [AnkiTron](https://github.com/danielpassy/Anki-CardOTron) to automate the creation of Anki Deck to study Hebrew.
+Written in Django, it allows user to utilize [AnkiTron](https://github.com/danielpassy/Anki-CardOTron) to automate the creation of Anki Deck to study Hebrew.<br>
 Anki is a software to aid study, largely used by language learners and Medicine students - it helps memorizing a lot of information
 
 ## About it
