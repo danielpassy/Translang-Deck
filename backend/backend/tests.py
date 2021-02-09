@@ -1,17 +1,17 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.test import Client
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.http import HttpRequest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APITestCase
 from rest_framework.test import RequestsClient
 from rest_framework import status
 from .models import Decks, Correction
 from .serializers import DeckSerializer
 from .util import get_create_uuidd
-from django.core.files.uploadedfile import SimpleUploadedFile
 import os
 import csv
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.http import HttpRequest
 
 # Create your tests here.
 class FileInputError(APITestCase):
@@ -254,10 +254,10 @@ class Correction(APITestCase):
         self.response2 = self.client.post(
             reverse("correct"), {"id": 1, "errors": errors}, format="json"
         )
+
         self.assertEqual(
             self.response2.data,
-            f"You must inser a correction for the word {errors[0]['word']} \
-                or delete this error entry if you want to ignore it",
+            f"You must insert a correction for the word {errors[0]['word']} or delete this error entry if you want to ignore it",
         )
 
     def test_still_needing_correction(self):

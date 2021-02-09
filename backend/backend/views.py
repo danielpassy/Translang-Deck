@@ -28,7 +28,6 @@ logger = logging.getLogger(__file__)
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
 class GetCSRFToken(APIView):
-
     def get(self, request, format=None):
         return Response({"success": "CSRF cookie set"})
 
@@ -66,7 +65,7 @@ def request_deck(request, method):
         if not valid_file:
             return Response(file_handler.error, status=status.HTTP_400_BAD_REQUEST)
         else:
-            ankitron_instance = AnkiCardOTron.AnkiCardOTron(file_path=file, django=1)
+            ankitron_instance = AnkiCardOTron.AnkiCardOTron(file_path=file, in_memory=1)
 
     # TODO: is it needed to implement input sanitizing?
     elif method == "list":
@@ -76,7 +75,9 @@ def request_deck(request, method):
             return Response(
                 "You need to upload a file", status=status.HTTP_400_BAD_REQUEST
             )
-        ankitron_instance = AnkiCardOTron.AnkiCardOTron(word_list=word_list, django=1)
+        ankitron_instance = AnkiCardOTron.AnkiCardOTron(
+            word_list=word_list, in_memory=1
+        )
 
     # perform the translation
     ankitron_instance.translate()
@@ -103,7 +104,6 @@ def request_deck(request, method):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # FIND A WAY TO TRANSLATE OONLY WHAT IS NEEDED!
-    ankitron_instance.save_notes()
     # TODO: CHANGE GENERATE TOGETHER WITH PATH, UPLOAD CHANGE TO PACKAGE ASWEL.
 
     deck_path = ankitron_instance.generate_deck(settings.MEDIA_ROOT)
@@ -179,8 +179,7 @@ def correct(request):
         try:
             if not entry["correction"]:
                 return Response(
-                    f"You must inser a correction for the word {entry['word']} \
-                    or delete this error entry if you want to ignore it",
+                    f"You must insert a correction for the word {entry['word']} or delete this error entry if you want to ignore it",
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             corrections = True
@@ -199,7 +198,9 @@ def correct(request):
         word_list = [entry["correction"] for entry in data["errors"]]
 
         # proccess news words
-        ankitron_instance = AnkiCardOTron.AnkiCardOTron(word_list=word_list, django=1)
+        ankitron_instance = AnkiCardOTron.AnkiCardOTron(
+            word_list=word_list, in_memory=True
+        )
         ankitron_instance.translate()
 
         # delete old errors
@@ -234,7 +235,6 @@ def correct(request):
     # in the obscure event that everything works just fine.
     previous_word = correction.fields
     ankitron_instance.deserialize(previous_word)
-    ankitron_instance.save_notes()
     deck_path = ankitron_instance.generate_deck(settings.MEDIA_ROOT)
 
     # get only the deck name
